@@ -1,5 +1,6 @@
 import express from "express";
-import { insertUser } from "../models/user/UserModel.js";
+import { getUserByEmail, insertUser } from "../models/user/UserModel.js";
+import { comparePassword, hasPassword } from "../utils/bcrypt.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -15,8 +16,8 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
-
+    // console.log(req.body);
+    req.body.password = hasPassword(req.body.password);
     const result = await insertUser(req.body);
     console.log(result);
 
@@ -35,6 +36,37 @@ router.post("/", async (req, res) => {
       code = 200;
       error.message = "User already exists.";
     }
+    res.status(code).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = res.body;
+    // get the user email and get user from the db
+    const user = await getUserByEmail(email);
+    if (user?._id) {
+      // compare password
+      const isMatched = comparePassword(password, user.password);
+      if (isMatched) {
+        // authorized
+        return res.json({
+          status: "success",
+          message: "Logged in Successfully",
+        });
+      }
+    }
+
+    res.json({
+      status: "error",
+      message: "Invalid login credentials",
+    });
+  } catch (error) {
+    let code = 500;
+
     res.status(code).json({
       status: "error",
       message: error.message,
