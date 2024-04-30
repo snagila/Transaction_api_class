@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // routers
-import userRouter from ".src/routers/users.js";
+import userRouter from "./src/routers/users.js";
 import transactionRouter from "./src/routers/transactions.js";
 
 // user

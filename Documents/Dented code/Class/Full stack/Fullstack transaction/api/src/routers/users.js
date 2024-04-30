@@ -15,7 +15,10 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log(req.body);
+
     const result = await insertUser(req.body);
+    console.log(result);
 
     result?._id
       ? res.json({
@@ -27,7 +30,12 @@ router.post("/", async (req, res) => {
           message: "Unable to process your request. Please try again later",
         });
   } catch (error) {
-    res.status(500).json({
+    let code = 500;
+    if (error.message.includes("E11000 duplicate key error collection")) {
+      code = 200;
+      error.message = "User already exists.";
+    }
+    res.status(code).json({
       status: "error",
       message: error.message,
     });

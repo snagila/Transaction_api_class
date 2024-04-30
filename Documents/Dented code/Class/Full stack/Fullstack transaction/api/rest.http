@@ -5,8 +5,13 @@ GET http://localhost:8000/api/v1/users
 Content-Type: application/json
 
 {
-   "name":"Prem"
+   "name":"bb",
+    "email":"pp@pp.com",
+    "phone":"987654",
+    "passsword": "pp"
 }
+
+
 
 # ====== Transaction section
 ### post transaction
@@ -14,5 +19,10 @@ POST http://localhost:8000/api/v1/users
 Content-Type: application/json
 
 {
-    "title":"Salary"
+    "name":"aa",
+    "email":"pp@pp.com",
+    "phone":"987654",
+    "passsword": "pp"
 }
+
+
