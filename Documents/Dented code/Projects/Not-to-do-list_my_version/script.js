@@ -1,5 +1,5 @@
 let taskList = [];
-const ttlHrs = 24 * 5;
+const hrsPerWeek = 24 * 7;
 
 const handleOnSubmit = (e) => {
   const newForm = new FormData(e);
@@ -14,9 +14,8 @@ const handleOnSubmit = (e) => {
   };
 
   const existingTtl = taskTotal();
-
-  if (existingTtl + hr > ttlHrs) {
-    return alert("Sorry the weekly allocated weekly times have been exaushed");
+  if (existingTtl + hr > hrsPerWeek) {
+    return alert("Sorry! Maximun hours per week has been spended");
   }
   taskList.push(obj);
   displayEntry();
@@ -48,6 +47,7 @@ const displayEntry = () => {
 
   entryElm.innerHTML = str;
   displayBadList();
+  taskTotal();
 };
 
 const displayBadList = (item) => {
@@ -55,9 +55,6 @@ const displayBadList = (item) => {
   let badhrsTtl = document.getElementById("savedHrs");
   const badListElm = document.getElementById("badList");
   const updatedBadList = taskList.filter((item, i) => item.type === "bad");
-
-  const savedHrs = updatedBadList.reduce((acc, item) => acc + item.hr);
-  badhrsTtl.innerText = savedHrs;
 
   updatedBadList.map((item, index) => {
     str += ` <tr class="md">
@@ -76,7 +73,12 @@ const displayBadList = (item) => {
   </td>
 </tr>`;
   });
+
   badListElm.innerHTML = str;
+  document.getElementById("savedHrs").innerText = updatedBadList.reduce(
+    (acc, item) => acc + item.hr,
+    0
+  );
 };
 
 const switchToBad = (id, type) => {
