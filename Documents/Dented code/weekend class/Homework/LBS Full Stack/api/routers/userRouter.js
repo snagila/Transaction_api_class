@@ -1,7 +1,7 @@
 import express from "express";
 import { newUserValidation } from "../validationMiddleware/userValidation.js";
-import { hashPassword } from "../utility/bcryptHelper.js";
-import { createUser } from "../model/userModel.js";
+import { comparePassword, hashPassword } from "../utility/bcryptHelper.js";
+import { createUser, findUserByEmail } from "../model/userModel.js";
 import {
   buildErrorResponse,
   buildSuccessResponse,
@@ -29,4 +29,16 @@ userRouter.post("/", newUserValidation, async (req, res) => {
     }
     buildErrorResponse(res, error.message);
   }
+});
+
+// login user
+userRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await findUserByEmail(email);
+    if (user?._id) {
+      const isPasswordMatched = comparePassword(password, user.password);
+      const jwt= 
+    }
+  } catch (error) {}
 });
