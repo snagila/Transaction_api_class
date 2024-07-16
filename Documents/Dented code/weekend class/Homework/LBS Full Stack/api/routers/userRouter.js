@@ -38,7 +38,7 @@ userRouter.post("/login", async (req, res) => {
     const user = await findUserByEmail(email);
     if (user?._id) {
       const isPasswordMatched = comparePassword(password, user.password);
-      const jwt= 
+      // const jwt=
     }
   } catch (error) {}
 });
