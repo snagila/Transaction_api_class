@@ -7,6 +7,10 @@ export const createUser = (userObj) => {
 
 // find user by email
 export const findUserByEmail = (email) => {
-  console.log(email);
   return userSchema.findOne({ email });
+};
+
+// update refresh token
+export const updateRefreshJWT = (email, refreshJWT) => {
+  return userSchema.findOneAndUpdate({ email }, { refreshJWT });
 };

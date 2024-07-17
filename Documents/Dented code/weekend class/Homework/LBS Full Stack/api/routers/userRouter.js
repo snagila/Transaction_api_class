@@ -6,9 +6,12 @@ import {
   buildErrorResponse,
   buildSuccessResponse,
 } from "../utility/responseHelper.js";
+import { generateAccessJWT, generateJWTs } from "../utility/jwtHelper.js";
+import { userAuth } from "../authMiddleWare/authMiddleWare.js";
 
 export const userRouter = express.Router();
 
+// PUBLIC ROUTES
 // Create User | SignUp EndPoint
 
 userRouter.post("/", newUserValidation, async (req, res) => {
@@ -36,9 +39,26 @@ userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await findUserByEmail(email);
+
     if (user?._id) {
       const isPasswordMatched = comparePassword(password, user.password);
-      // const jwt=
+      const jwt = generateJWTs(email);
+
+      isPasswordMatched
+        ? buildSuccessResponse(res, jwt, "Logged in Successfully")
+        : buildErrorResponse(res, "Invalid Crediantials fromm router");
+      return;
     }
+    buildErrorResponse(res, "Invalid Crediantials fromm router");
+  } catch (error) {
+    buildErrorResponse(res, "Invalid Crediantials fromm router");
+  }
+});
+
+// PRIVATE ROUTES
+
+// get the user
+userRouter.get("/", userAuth, async (req, res) => {
+  try {
   } catch (error) {}
 });
