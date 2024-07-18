@@ -7,7 +7,8 @@ import {
   buildSuccessResponse,
 } from "../utility/responseHelper.js";
 import { generateAccessJWT, generateJWTs } from "../utility/jwtHelper.js";
-import { userAuth } from "../authMiddleWare/authMiddleWare.js";
+import { refreshAuth, userAuth } from "../authMiddleWare/authMiddleWare.js";
+import { deletesession } from "../model/sessionModel.js";
 
 export const userRouter = express.Router();
 
@@ -60,5 +61,32 @@ userRouter.post("/login", async (req, res) => {
 // get the user
 userRouter.get("/", userAuth, async (req, res) => {
   try {
-  } catch (error) {}
+    buildSuccessResponse(res, req.userInfo, "User Info");
+  } catch (error) {
+    buildErrorResponse(res, "Invalid access token");
+  }
+});
+
+// get the access token based on refresh token
+userRouter.get("/accessJWT", refreshAuth, async (req, res) => {
+  try {
+    buildSuccessResponse(res, req.newAccessToken, "New Access Token");
+  } catch (error) {
+    buildErrorResponse(res, "Can not perform the desired action");
+  }
+});
+
+// logout user from the system
+userRouter.post("/logout", userAuth, async (req, res) => {
+  try {
+    const { authorization } = req.headers;
+    console.log(authorization);
+
+    // remove session from session table
+    const deletedSession = await deletesession(authorization);
+
+    console.log(deletedSession);
+  } catch (error) {
+    buildErrorResponse(res, "Can not logout the user.");
+  }
 });

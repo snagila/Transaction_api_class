@@ -48,3 +48,13 @@ export const generateJWTs = (email) => {
     refreshJWT: generateRefreshJWT(email),
   };
 };
+
+// validate accessJWT
+export const verifyAccessJWT = (accessJWT) => {
+  return jwt.verify(accessJWT, process.env.ACCESS_JWT_SECRET_KEY);
+};
+
+// verify refreshJWT
+export const verifyRefreshJWT = (refreshJWT) => {
+  return jwt.verify(refreshJWT, process.env.ACCESS_JWT_SECRET_KEY);
+};
